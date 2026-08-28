@@ -1,8 +1,9 @@
 {
   "name": "notion-sdk-project",
   "version": "1.0.0",
-  "description": "",
+  "description": "Shared Notion SDK helpers for Node.js apps and Cloudflare Workers",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
