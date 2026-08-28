@@ -1,28 +1,60 @@
 # notion-sdk-typescript-starter
 
-This is a template repository for getting started with the [Notion SDK](https://github.com/makenotion/notion-sdk-js)
-and [TypeScript](https://www.typescriptlang.org/).
-
-To use this template, click the big green "Use this template" button in the upper-right corner. After some questions,
-GitHub will create a new clone under your account, and then you can get started customizing.
+This repository now exposes a small shared Notion client helper that can be used from
+Node.js applications and Cloudflare Workers, making it a common integration point for
+multiple apps.
 
 ## Features
 
 - TypeScript for type checking.
 - [Prettier](https://prettier.io/) for code formatting.
 - A minimal GitHub Actions workflow that typechecks your code.
-- [Dotenv](https://www.npmjs.com/package/dotenv) for configuring your Notion API token.
+- [Dotenv](https://www.npmjs.com/package/dotenv) for configuring your Notion API token in Node.js.
 - [Dependabot](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuring-dependabot-version-updates)
   for ensuring your (and this template's!) dependencies are up to date.
 - Our lovely Notion SDK!
+- Shared helpers that accept either `process.env` values or explicit runtime bindings.
 
-## What to do after duplicating
+## Environment variables
+
+Set these values in whichever runtime is consuming the SDK:
+
+- `NOTION_TOKEN`
+- `NOTION_DATABASE_ID`
+
+For local Node.js usage, you can still load them from `.env`:
+
+```bash
+echo "NOTION_TOKEN=[your token here]" > .env
+echo "NOTION_DATABASE_ID=[your database id here]" >> .env
+```
+
+## Node.js usage
 
 1. Make sure you've [created a Notion integration](https://developers.notion.com/docs/getting-started) and have a secret Notion token.
-2. Add your Notion token to a `.env` file at the root of this repository: `echo "NOTION_TOKEN=[your token here]" > .env`.
-3. Run `npm install`.
-4. Edit the `database_id` in `index.ts` from FIXME to be any database currently shared with your integration.
-5. Run `npm start` to run the script.
+2. Run `npm install`.
+3. Set `NOTION_TOKEN` and `NOTION_DATABASE_ID`.
+4. Run `npm start` to execute the sample query.
+
+## Cloudflare Workers usage
+
+You can pass Cloudflare bindings directly instead of relying on `process.env`:
+
+```ts
+import { queryDatabase } from "notion-sdk-project";
+
+export interface Env {
+  NOTION_TOKEN: string;
+  NOTION_DATABASE_ID: string;
+}
+
+export default {
+  async fetch(_request: Request, env: Env): Promise<Response> {
+    const response = await queryDatabase(env);
+    return Response.json(response);
+  },
+};
+```
 
 Now you can head over to our [developer documentation](https://developers.notion.com/) for more information on using the Notion API!
 
